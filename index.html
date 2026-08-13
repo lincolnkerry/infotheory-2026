@@ -198,7 +198,7 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
   <p class="sec-note">Ask about entropy, typical sets, channel capacity, homework policy, or the schedule. The TA explains and gives hints — it will not hand out homework answers.</p>
   <div id="ta-box">
     <div id="ta-log">
-      <div class="msg ta"><div class="who">AI TA</div><div class="body">Hello — I am the AI TA for Information Theory 2026. Ask me anything about the lectures, Cover &amp; Thomas, or course logistics.</div></div>
+      <div class="msg ta"><div class="who">AI TA</div><div class="body">Hello — I am the AI TA for Information Theory 2026. Type your question below and press Send: it opens a pre-filled GitHub Issue, and I reply there (usually within a minute). You need a (free) GitHub account — the same one you use for homework.</div></div>
     </div>
     <form id="ta-form">
       <input id="ta-input" type="text" placeholder="e.g. Why does conditioning reduce entropy?" autocomplete="off">
@@ -243,15 +243,15 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
 
 <script>
 // ---- AI TA widget -------------------------------------------------------
-// Set TA_ENDPOINT to your deployed proxy (Cloudflare Worker / server) that
-// holds the Anthropic API key. Never put an API key in this file.
-const TA_ENDPOINT = ""; // e.g. "https://it2026-ta.yourname.workers.dev/chat"
+// Questions are routed to GitHub Issues in this repo, where a GitHub Action
+// (.github/workflows/ai-ta.yml) runs Claude on the instructor's subscription.
+// No API key, no server. Students need a GitHub account (required for HW anyway).
+const TA_REPO = "lincolnkerry/infotheory-2026";
 
 const log = document.getElementById('ta-log');
 const form = document.getElementById('ta-form');
 const input = document.getElementById('ta-input');
 const send = document.getElementById('ta-send');
-const history = [];
 
 function add(role, text){
   const m = document.createElement('div');
@@ -262,23 +262,16 @@ function add(role, text){
   return m.querySelector('.body');
 }
 
-form.addEventListener('submit', async (e)=>{
+form.addEventListener('submit', (e)=>{
   e.preventDefault();
   const q = input.value.trim(); if(!q) return;
-  add('user', q); input.value=''; send.disabled = true;
-  history.push({role:'user', content:q});
-  const out = add('ta','…');
-  try{
-    if(!TA_ENDPOINT) throw new Error('offline');
-    const r = await fetch(TA_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({messages: history.slice(-12)})});
-    const d = await r.json();
-    const a = d.reply || d.content?.[0]?.text || 'No response.';
-    out.textContent = a; history.push({role:'assistant', content:a});
-  }catch(err){
-    out.textContent = 'The AI TA endpoint is not connected yet. Meanwhile: check the lecture videos, or email the professor. (Admin: set TA_ENDPOINT in index.html.)';
-  }
-  send.disabled = false; input.focus();
+  add('user', q); input.value='';
+  const title = encodeURIComponent(q.length > 60 ? q.slice(0,57) + '...' : q);
+  const body  = encodeURIComponent('@claude ' + q);
+  const url = 'https://github.com/' + TA_REPO + '/issues/new?labels=question&title=' + title + '&body=' + body;
+  add('ta', 'Opening a pre-filled GitHub Issue in a new tab — just press "Create" there. I will reply in that issue, usually within a minute. (If nothing opened, allow pop-ups for this site.)');
+  window.open(url, '_blank', 'noopener');
+  input.focus();
 });
 </script>
 </body>
