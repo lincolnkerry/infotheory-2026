@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Information Theory 2026 · INFONET @ GIST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF9F5; --grid:#E8E6DD; --ink:#182430; --ink-soft:#4A5865;
+  --signal:#0E6E58; --noise:#B4552D; --line:#D8D5CB; --card:#FFFFFF;
+  --mono:'IBM Plex Mono',monospace; --serif:'STIX Two Text',serif; --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans); color:var(--ink); background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px; line-height:1.55;
+}
+a{color:var(--signal);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+/* nav */
+nav{position:sticky;top:0;background:rgba(250,249,245,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);z-index:10}
+nav .wrap{display:flex;align-items:center;gap:22px;height:52px;font-size:.85rem}
+nav .brand{font-family:var(--mono);font-weight:500;color:var(--ink)}
+nav a.nl{color:var(--ink-soft)}
+nav a.nl:hover{color:var(--signal);text-decoration:none}
+/* hero */
+header{padding:56px 0 40px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;color:var(--signal);text-transform:uppercase}
+h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;margin:.35em 0 .3em}
+.sub{color:var(--ink-soft);max-width:560px}
+.capacity{font-family:var(--serif);font-style:italic;font-size:1.15rem;margin-top:14px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr}}
+.chan svg{width:100%;height:auto}
+.chan text{font-family:var(--mono);font-size:11px;fill:var(--ink)}
+.chan .bit{font-family:var(--mono);font-size:13px;fill:var(--signal)}
+.chan .flip{fill:var(--noise)}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;font-family:var(--mono);font-size:.8rem}
+.facts span{border:1px solid var(--line);background:var(--card);padding:5px 11px;border-radius:3px}
+/* sections */
+section{padding:44px 0;border-bottom:1px solid var(--line)}
+h2{font-family:var(--serif);font-size:1.7rem;font-weight:600;margin-bottom:6px}
+.sec-note{color:var(--ink-soft);font-size:.92rem;margin-bottom:22px;max-width:640px}
+/* schedule */
+table{width:100%;border-collapse:collapse;background:var(--card);font-size:.88rem}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;text-align:left;color:var(--ink-soft);border-bottom:2px solid var(--ink);padding:8px 10px}
+td{border-bottom:1px solid var(--line);padding:10px;vertical-align:top}
+td .d{font-family:var(--mono);font-size:.75rem;color:var(--ink-soft)}
+tr.exam td{background:#F3EFE6;font-weight:600}
+td.hol{background:#FBF1EA}
+td.hol .d::after{content:" · 공휴일";color:var(--noise)}
+.hw{display:inline-block;font-family:var(--mono);font-size:.72rem;color:#fff;background:var(--noise);padding:1px 7px;border-radius:3px;margin-top:4px}
+.qz{background:var(--signal)}
+.tbl-scroll{overflow-x:auto;border:1px solid var(--line)}
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);padding:20px}
+.card h3{font-family:var(--serif);font-size:1.1rem;margin-bottom:8px}
+.card ol,.card ul{padding-left:18px;font-size:.9rem;color:var(--ink-soft)}
+.card li{margin-bottom:6px}
+code{font-family:var(--mono);font-size:.82em;background:#EFEDE4;padding:1px 5px;border-radius:3px}
+/* grading bars */
+.gr{display:flex;height:34px;border:1px solid var(--ink);font-family:var(--mono);font-size:.7rem;margin-top:10px;max-width:640px}
+.gr div{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden}
+/* chat */
+#ta-box{background:var(--card);border:1px solid var(--ink);max-width:680px}
+#ta-log{height:300px;overflow-y:auto;padding:16px;font-size:.9rem}
+.msg{margin-bottom:12px;max-width:85%}
+.msg .who{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}
+.msg.user{margin-left:auto;text-align:right}
+.msg .body{background:#F1EFE7;display:inline-block;padding:8px 12px;border-radius:4px;text-align:left;white-space:pre-wrap}
+.msg.ta .body{background:#E5F0EC}
+#ta-form{display:flex;border-top:1px solid var(--line)}
+#ta-input{flex:1;border:0;padding:12px 14px;font:inherit;background:transparent;outline:none}
+#ta-send{border:0;background:var(--signal);color:#fff;font-family:var(--mono);padding:0 20px;cursor:pointer}
+#ta-send:disabled{opacity:.5}
+footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){.chan animate,.chan animateTransform{display:none}}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <span class="brand">INFONET·GIST</span>
+  <a class="nl" href="#schedule">Schedule</a>
+  <a class="nl" href="#homework">Homework</a>
+  <a class="nl" href="#ta">AI&nbsp;TA</a>
+  <a class="nl" href="#grading">Grading</a>
+  <a class="nl" href="#resources">Resources</a>
+</div></nav>
+
+<header><div class="wrap hero-grid">
+  <div>
+    <div class="eyebrow">EC5301 · Fall 2026 · Heung-No Lee</div>
+    <h1>Information Theory</h1>
+    <p class="sub">Entropy, data compression, and channel capacity — from Shannon's 1948 framework to its role in modern AI. 26 lectures, Mon &amp; Wed, 대학 C동 110호.</p>
+    <p class="capacity">C&nbsp;=&nbsp;max<sub>p(x)</sub>&nbsp;I(X;Y)</p>
+    <div class="facts">
+      <span>Aug 31 – Dec 18, 2026</span>
+      <span>Cover &amp; Thomas</span>
+      <span>2 Quizzes · Midterm · Final</span>
+    </div>
+  </div>
+  <div class="chan" aria-hidden="true">
+    <svg viewBox="0 0 460 190" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#182430"/></marker></defs>
+      <g stroke="#182430" stroke-width="1.4" fill="#FFFFFF">
+        <rect x="8"   y="70" width="78" height="44"/>
+        <rect x="130" y="70" width="78" height="44"/>
+        <rect x="252" y="70" width="78" height="44"/>
+        <rect x="374" y="70" width="78" height="44"/>
+      </g>
+      <text x="47"  y="96" text-anchor="middle">SOURCE</text>
+      <text x="169" y="96" text-anchor="middle">ENCODER</text>
+      <text x="291" y="90" text-anchor="middle">CHANNEL</text>
+      <text x="291" y="103" text-anchor="middle">p(y|x)</text>
+      <text x="413" y="96" text-anchor="middle">DECODER</text>
+      <g stroke="#182430" stroke-width="1.4" marker-end="url(#ar)">
+        <line x1="86" y1="92" x2="126" y2="92"/>
+        <line x1="208" y1="92" x2="248" y2="92"/>
+        <line x1="330" y1="92" x2="370" y2="92"/>
+        <line x1="291" y1="34" x2="291" y2="66"/>
+      </g>
+      <text x="291" y="24" text-anchor="middle" class="flip" style="font-family:'IBM Plex Mono';font-size:11px">NOISE</text>
+      <text class="bit" x="96" y="86">1011
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="242 0" dur="3.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;1;0;1;1" keyTimes="0;.48;.5;.52;1" dur="3.2s" repeatCount="indefinite"/>
+      </text>
+      <text class="bit flip" x="96" y="86" opacity="0">1001
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="242 0" dur="3.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.48;.5;.52;1" dur="3.2s" repeatCount="indefinite"/>
+      </text>
+      <text x="230" y="165" text-anchor="middle" style="font-family:'STIX Two Text';font-style:italic;font-size:13px" fill="#4A5865">"The fundamental problem of communication" — C. E. Shannon, 1948</text>
+    </svg>
+  </div>
+</div></header>
+
+<section id="schedule"><div class="wrap">
+  <h2>Weekly Schedule</h2>
+  <p class="sec-note">Same routine as 2025: 14 lectures before the midterm, 12 after. Lecture notes and full videos on the <a href="https://www.youtube.com/@heung-noleelabgist2902/videos">Heung-No Lee Lab YouTube channel</a>. Dates follow the official <a href="https://www.gist.ac.kr/kr/html/sub05/0501.html">GIST 2026 academic calendar</a>: semester Aug 31 – Dec 18, midterm week Oct 19–23, final week Dec 14–18. Chuseok (Sep 24–26, Thu–Sat) does not affect Mon/Wed classes; Oct 5 (Mon) is the substitute holiday for National Foundation Day — study the assigned videos that week.</p>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>Wk</th><th>Monday</th><th>Wednesday</th><th>Assignments</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><span class="d">8/31</span><br>Introduction to class</td><td><span class="d">9/2</span><br>Probability &amp; Random Variables</td><td></td></tr>
+      <tr><td>2</td><td><span class="d">9/7</span><br>Monte Hall</td><td><span class="d">9/9</span><br>Information / Horse Race</td><td><span class="hw">HW1</span></td></tr>
+      <tr><td>3</td><td><span class="d">9/14</span><br>Entropy</td><td><span class="d">9/16</span><br>Mutual Information</td><td></td></tr>
+      <tr><td>4</td><td><span class="d">9/21</span><br>Jensen's Inequality · Relative Entropy</td><td><span class="d">9/23</span><br>DPI · Markov Chains · 2nd Law<br><span class="d">추석연휴 9/24–26 (목–토)</span></td><td><span class="hw">HW2</span> due before Quiz 1</td></tr>
+      <tr><td>5</td><td><span class="d">9/28</span><br>Sufficient Statistics · Fano · Transformers</td><td><span class="d">9/30</span><br><b>Quiz #1</b> · Convergences · LLN</td><td><span class="hw">HW3</span> <span class="hw qz">Quiz 1</span></td></tr>
+      <tr><td>6</td><td class="hol"><span class="d">10/5</span><br>대체휴일 (개천절) — no class.<br>Videos: AEP · Typical Sets</td><td><span class="d">10/7</span><br>Entropy Rate · Cesàro Mean</td><td></td></tr>
+      <tr><td>7</td><td><span class="d">10/12</span><br>Data Compression · Kraft Inequality</td><td><span class="d">10/14</span><br>Huffman · Lempel-Ziv · Midterm Review</td><td><span class="hw">HW4</span></td></tr>
+      <tr class="exam"><td>8</td><td colspan="2"><span class="d">10/19 – 10/23</span><br>Midterm Exam (GIST midterm week)</td><td></td></tr>
+      <tr><td>9</td><td><span class="d">10/26</span><br>Communications over Channels</td><td><span class="d">10/28</span><br>Hamming Codes · Erasure Correction</td><td><span class="hw">HW5</span></td></tr>
+      <tr><td>10</td><td><span class="d">11/2</span><br>Channel Capacity · Noisy Typewriter</td><td><span class="d">11/4</span><br>BSC · BEC · Symmetric Channels</td><td><span class="hw">HW6</span></td></tr>
+      <tr><td>11</td><td><span class="d">11/9</span><br>Channel Coding Theorem: Setup &amp; Key Ideas</td><td><span class="d">11/11</span><br>Forward Proof · Information BER</td><td></td></tr>
+      <tr><td>12</td><td><span class="d">11/16</span><br>Converse Proof (Fano's Inequality)</td><td><span class="d">11/18</span><br>Differential Entropy</td><td><span class="hw">HW7</span></td></tr>
+      <tr><td>13</td><td><span class="d">11/23</span><br><b>Quiz #2</b> · Gaussian Channel Motivation</td><td><span class="d">11/25</span><br>AWGN Channel Capacity</td><td><span class="hw qz">Quiz 2</span></td></tr>
+      <tr><td>14</td><td><span class="d">11/30</span><br>Gaussian Coding Theorem · Sphere Packing</td><td><span class="d">12/2</span><br>Parallel Gaussian Channels · Water-filling</td><td><span class="hw">HW8</span> (no submission)</td></tr>
+      <tr><td>15</td><td><span class="d">12/7</span><br>Multiple Access · Slepian-Wolf</td><td><span class="d">12/9</span><br>Final Preparation</td><td></td></tr>
+      <tr class="exam"><td>16</td><td colspan="2"><span class="d">12/14 – 12/18</span><br>Final Exam (GIST final week)</td><td></td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="homework"><div class="wrap">
+  <h2>Homework Submission via GitHub</h2>
+  <p class="sec-note">Each student gets a private repository. Push your solution; the AI grader reviews it against the rubric, commits corrections to your repo, and emails your score.</p>
+  <div class="cards">
+    <div class="card"><h3>1 · Accept</h3>
+      <ol>
+        <li>Create a GitHub account with your GIST email.</li>
+        <li>Open the invitation link for each assignment (posted here and by email).</li>
+        <li>A private repo <code>it2026-hwN-yourid</code> is created for you.</li>
+      </ol></div>
+    <div class="card"><h3>2 · Submit</h3>
+      <ol>
+        <li>Write solutions as PDF (scanned handwriting is fine) or Markdown/LaTeX.</li>
+        <li>Name the file <code>hwN_studentID.pdf</code>.</li>
+        <li>Push before the deadline — the last commit before the due time counts.</li>
+      </ol></div>
+    <div class="card"><h3>3 · Feedback</h3>
+      <ol>
+        <li>The AI grader checks each problem against the solution set.</li>
+        <li><code>FEEDBACK.md</code> with per-problem scores and corrections appears in your repo.</li>
+        <li>Score is emailed to your GIST address. Disputes: open a GitHub Issue in your repo.</li>
+      </ol></div>
+  </div>
+</div></section>
+
+<section id="ta"><div class="wrap">
+  <h2>AI Teaching Assistant</h2>
+  <p class="sec-note">Ask about entropy, typical sets, channel capacity, homework policy, or the schedule. The TA explains and gives hints — it will not hand out homework answers.</p>
+  <div id="ta-box">
+    <div id="ta-log">
+      <div class="msg ta"><div class="who">AI TA</div><div class="body">Hello — I am the AI TA for Information Theory 2026. Ask me anything about the lectures, Cover &amp; Thomas, or course logistics.</div></div>
+    </div>
+    <form id="ta-form">
+      <input id="ta-input" type="text" placeholder="e.g. Why does conditioning reduce entropy?" autocomplete="off">
+      <button id="ta-send" type="submit">Send</button>
+    </form>
+  </div>
+</div></section>
+
+<section id="grading"><div class="wrap">
+  <h2>Course Grades</h2>
+  <div class="gr">
+    <div style="flex:30;background:#182430">Midterm 30</div>
+    <div style="flex:30;background:#2E4257">Final 30</div>
+    <div style="flex:20;background:#0E6E58">HW + Reviews 20</div>
+    <div style="flex:10;background:#5E8A7B">Att. 10</div>
+    <div style="flex:10;background:#B4552D">Quiz 10</div>
+  </div>
+  <p class="sec-note" style="margin-top:14px">Attendance: no-show without prior notice, or late entry into (Zoom) class, is considered not polite.</p>
+</div></section>
+
+<section id="resources"><div class="wrap">
+  <h2>Resources</h2>
+  <div class="cards">
+    <div class="card"><h3>Materials</h3><ul>
+      <li><a href="https://drive.google.com/drive/folders/1J40E5SQXdbYjxSVs2cqX3mEd6wBzGnkA">Class files (Google Drive)</a></li>
+      <li><a href="https://www.youtube.com/@heung-noleelabgist2902/videos">Lecture videos (YouTube)</a></li>
+      <li>Cover &amp; Thomas, <i>Elements of Information Theory</i>, 2e</li>
+    </ul></div>
+    <div class="card"><h3>Course History</h3><ul>
+      <li><a href="https://heungno.net/?page_id=30270">Information Theory 2025</a></li>
+      <li><a href="https://heungno.net/">INFONET Lab</a></li>
+    </ul></div>
+    <div class="card"><h3>Contact</h3><ul>
+      <li>Prof. Heung-No Lee, EECS, GIST</li>
+      <li>Office hours: after class or by appointment</li>
+      <li>Homework disputes: GitHub Issue in your repo</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">INFONET @ GIST · Information Theory 2026 · H(X) ≥ 0, with equality iff X is deterministic.</div></footer>
+
+<script>
+// ---- AI TA widget -------------------------------------------------------
+// Set TA_ENDPOINT to your deployed proxy (Cloudflare Worker / server) that
+// holds the Anthropic API key. Never put an API key in this file.
+const TA_ENDPOINT = ""; // e.g. "https://it2026-ta.yourname.workers.dev/chat"
+
+const log = document.getElementById('ta-log');
+const form = document.getElementById('ta-form');
+const input = document.getElementById('ta-input');
+const send = document.getElementById('ta-send');
+const history = [];
+
+function add(role, text){
+  const m = document.createElement('div');
+  m.className = 'msg ' + (role==='user'?'user':'ta');
+  m.innerHTML = '<div class="who">'+(role==='user'?'You':'AI TA')+'</div><div class="body"></div>';
+  m.querySelector('.body').textContent = text;
+  log.appendChild(m); log.scrollTop = log.scrollHeight;
+  return m.querySelector('.body');
+}
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const q = input.value.trim(); if(!q) return;
+  add('user', q); input.value=''; send.disabled = true;
+  history.push({role:'user', content:q});
+  const out = add('ta','…');
+  try{
+    if(!TA_ENDPOINT) throw new Error('offline');
+    const r = await fetch(TA_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({messages: history.slice(-12)})});
+    const d = await r.json();
+    const a = d.reply || d.content?.[0]?.text || 'No response.';
+    out.textContent = a; history.push({role:'assistant', content:a});
+  }catch(err){
+    out.textContent = 'The AI TA endpoint is not connected yet. Meanwhile: check the lecture videos, or email the professor. (Admin: set TA_ENDPOINT in index.html.)';
+  }
+  send.disabled = false; input.focus();
+});
+</script>
+</body>
+</html>
