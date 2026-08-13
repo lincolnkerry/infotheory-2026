@@ -1,0 +1,30 @@
+# AI TA for the PUBLIC course repo: answers student questions in
+# Issues/Discussions when mentioned with @claude or labeled "question".
+# Safe: this repo contains no solutions/rubrics; the API key is only
+# exposed to this workflow, and students cannot modify workflows here.
+name: AI TA — answer questions
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+jobs:
+  answer:
+    if: >
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'question')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # TA persona/policy lives in CLAUDE.md at the repo root:
+          #  - answer with hints, definitions, and pointers to Cover & Thomas sections
+          #  - never give full homework solutions before the deadline
+          #  - escalate: if unsure, say so and tag the instructor
