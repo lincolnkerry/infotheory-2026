@@ -1,7 +1,12 @@
 # AI TA for the PUBLIC course repo: answers student questions in
 # Issues/Discussions when mentioned with @claude or labeled "question".
-# Safe: this repo contains no solutions/rubrics; the API key is only
+# Safe: this repo contains no solutions/rubrics; the token is only
 # exposed to this workflow, and students cannot modify workflows here.
+#
+# AUTH = Claude subscription (Pro/Max), NOT a pay-per-token API key:
+#   1. locally run:  claude setup-token
+#   2. save the token as repo secret  CLAUDE_CODE_OAUTH_TOKEN
+# Runs are billed against the subscription's usage limits.
 name: AI TA — answer questions
 on:
   issues:
@@ -23,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # TA persona/policy lives in CLAUDE.md at the repo root:
           #  - answer with hints, definitions, and pointers to Cover & Thomas sections
           #  - never give full homework solutions before the deadline
