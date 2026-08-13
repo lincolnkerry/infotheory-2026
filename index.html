@@ -195,10 +195,10 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
 
 <section id="ta"><div class="wrap">
   <h2>AI Teaching Assistant</h2>
-  <p class="sec-note">Ask about entropy, typical sets, channel capacity, homework policy, or the schedule. The TA explains and gives hints — it will not hand out homework answers.</p>
+  <p class="sec-note"><b>Two channels.</b> Quick questions — definitions, theorem statements, course logistics — get instant answers right here in this chat. For rigorous full proofs, deep dives, or homework disputes, use the <a href="https://github.com/lincolnkerry/infotheory-2026/issues">GitHub Q&amp;A</a> (open an issue and mention <code>@claude</code>): a top-tier model answers there, and every Q&amp;A stays public so you can search past answers. The TA gives hints, not homework solutions.</p>
   <div id="ta-box">
     <div id="ta-log">
-      <div class="msg ta"><div class="who">AI TA</div><div class="body">Hello — I am the AI TA for Information Theory 2026. Type your question below and press Send: it opens a pre-filled GitHub Issue, and I reply there (usually within a minute). You need a (free) GitHub account — the same one you use for homework.</div></div>
+      <div class="msg ta"><div class="who">AI TA</div><div class="body">Hello — I am the AI TA for Information Theory 2026. Ask me anything about the lectures, Cover &amp; Thomas, or course logistics. For long rigorous proofs, I may point you to the GitHub Q&amp;A, where a stronger model answers in full.</div></div>
     </div>
     <form id="ta-form">
       <input id="ta-input" type="text" placeholder="e.g. Why does conditioning reduce entropy?" autocomplete="off">
@@ -243,15 +243,17 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
 
 <script>
 // ---- AI TA widget -------------------------------------------------------
-// Questions are routed to GitHub Issues in this repo, where a GitHub Action
-// (.github/workflows/ai-ta.yml) runs Claude on the instructor's subscription.
-// No API key, no server. Students need a GitHub account (required for HW anyway).
-const TA_REPO = "lincolnkerry/infotheory-2026";
+// Light-answer channel: this chat POSTs to a Cloudflare Worker proxy that
+// calls Claude (Sonnet). The API key lives only in the Worker, never here.
+// Deep-answer channel: GitHub Q&A (issues, @claude) — top-tier model.
+const TA_ENDPOINT = "https://it2026-ta.heungno.workers.dev/chat";
+const TA_QNA = "https://github.com/lincolnkerry/infotheory-2026/issues";
 
 const log = document.getElementById('ta-log');
 const form = document.getElementById('ta-form');
 const input = document.getElementById('ta-input');
 const send = document.getElementById('ta-send');
+const history = [];
 
 function add(role, text){
   const m = document.createElement('div');
@@ -262,16 +264,22 @@ function add(role, text){
   return m.querySelector('.body');
 }
 
-form.addEventListener('submit', (e)=>{
+form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const q = input.value.trim(); if(!q) return;
-  add('user', q); input.value='';
-  const title = encodeURIComponent(q.length > 60 ? q.slice(0,57) + '...' : q);
-  const body  = encodeURIComponent('@claude ' + q);
-  const url = 'https://github.com/' + TA_REPO + '/issues/new?labels=question&title=' + title + '&body=' + body;
-  add('ta', 'Opening a pre-filled GitHub Issue in a new tab — just press "Create" there. I will reply in that issue, usually within a minute. (If nothing opened, allow pop-ups for this site.)');
-  window.open(url, '_blank', 'noopener');
-  input.focus();
+  add('user', q); input.value=''; send.disabled = true;
+  history.push({role:'user', content:q});
+  const out = add('ta','…');
+  try{
+    const r = await fetch(TA_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({messages: history.slice(-12)})});
+    const d = await r.json();
+    const a = d.reply || 'No response.';
+    out.textContent = a; history.push({role:'assistant', content:a});
+  }catch(err){
+    out.textContent = 'The AI TA chat is temporarily unavailable. Please use the GitHub Q&A instead: ' + TA_QNA + ' (open an issue and mention @claude — answers arrive within a minute).';
+  }
+  send.disabled = false; input.focus();
 });
 </script>
 </body>
