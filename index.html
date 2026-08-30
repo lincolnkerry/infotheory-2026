@@ -46,6 +46,11 @@ h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;l
 section{padding:44px 0;border-bottom:1px solid var(--line)}
 h2{font-family:var(--serif);font-size:1.7rem;font-weight:600;margin-bottom:6px}
 .sec-note{color:var(--ink-soft);font-size:.92rem;margin-bottom:22px;max-width:640px}
+/* materials banner */
+.mat-banner{display:flex;align-items:center;gap:14px;background:#E5F0EC;border:1px solid var(--signal);padding:14px 18px;margin-bottom:18px;color:var(--ink)}
+.mat-banner:hover{text-decoration:none;background:#DCEBE5}
+.mat-banner .mb-icon{font-size:1.4rem;line-height:1}
+.mat-banner .mb-go{margin-left:auto;font-family:var(--mono);font-size:.8rem;color:#fff;background:var(--signal);padding:7px 13px;border-radius:3px;white-space:nowrap}
 /* schedule */
 table{width:100%;border-collapse:collapse;background:var(--card);font-size:.88rem}
 th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;text-align:left;color:var(--ink-soft);border-bottom:2px solid var(--ink);padding:8px 10px}
@@ -97,7 +102,7 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
 
 <header><div class="wrap hero-grid">
   <div>
-    <div class="eyebrow">EC5301 · Fall 2026 · Heung-No Lee</div>
+    <div class="eyebrow">EC5203 · EC4310 · MM4450 · Fall 2026 · Heung-No Lee</div>
     <h1>Information Theory</h1>
     <p class="sub">Entropy, data compression, and channel capacity — from Shannon's 1948 framework to its role in modern AI. 26 lectures, Mon &amp; Wed, 대학 C동 110호.</p>
     <p class="capacity">C&nbsp;=&nbsp;max<sub>p(x)</sub>&nbsp;I(X;Y)</p>
@@ -145,6 +150,11 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
 <section id="schedule"><div class="wrap">
   <h2>Weekly Schedule</h2>
   <p class="sec-note">Same routine as 2025: 14 lectures before the midterm, 12 after. Lecture notes and full videos on the <a href="https://www.youtube.com/@heung-noleelabgist2902/videos">Heung-No Lee Lab YouTube channel</a>. Dates follow the official <a href="https://www.gist.ac.kr/kr/html/sub05/0501.html">GIST 2026 academic calendar</a>: semester Aug 31 – Dec 18, midterm week Oct 19–23, final week Dec 14–18. Chuseok (Sep 24–26, Thu–Sat) does not affect Mon/Wed classes; Oct 5 (Mon) is the substitute holiday for National Foundation Day — study the assigned videos that week.</p>
+  <a class="mat-banner" href="https://drive.google.com/drive/folders/1sBOupkDtMBin8wSfeXiEnXhUQBvHGwzs">
+    <span class="mb-icon">🗂</span>
+    <span><b>Course Materials</b> — Lecture Slides, Lecture Book, and all shared class files are in the class Google Drive.</span>
+    <span class="mb-go">Open Drive →</span>
+  </a>
   <div class="tbl-scroll"><table>
     <thead><tr><th>Wk</th><th>Monday</th><th>Wednesday</th><th>Assignments</th></tr></thead>
     <tbody>
@@ -223,7 +233,7 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
   <h2>Resources</h2>
   <div class="cards">
     <div class="card"><h3>Materials</h3><ul>
-      <li><a href="https://drive.google.com/drive/folders/1J40E5SQXdbYjxSVs2cqX3mEd6wBzGnkA">Class files (Google Drive)</a></li>
+      <li><a href="https://drive.google.com/drive/folders/1sBOupkDtMBin8wSfeXiEnXhUQBvHGwzs">Class files (Google Drive)</a></li>
       <li><a href="https://www.youtube.com/@heung-noleelabgist2902/videos">Lecture videos (YouTube)</a></li>
       <li>Cover &amp; Thomas, <i>Elements of Information Theory</i>, 2e</li>
     </ul></div>
