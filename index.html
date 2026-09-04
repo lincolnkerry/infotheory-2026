@@ -179,30 +179,37 @@ footer{padding:30px 0;font-size:.8rem;color:var(--ink-soft);font-family:var(--mo
 </div></section>
 
 <section id="homework"><div class="wrap">
-  <h2>Homework Submission via GitHub</h2>
-  <p class="sec-note">Each student gets a private repository. Push your solution; the AI grader reviews it against the rubric, commits corrections to your repo, and emails your score.</p>
-  <div class="cards">
-    <div class="card"><h3>1 · Accept</h3>
-      <ol>
-        <li>Create a GitHub account with your GIST email.</li>
-        <li>Open the invitation link for each assignment (posted here and by email).</li>
-        <li>A private repo <code>it2026-hwN-yourid</code> is created for you.</li>
-      </ol></div>
-    <div class="card"><h3>2 · Submit</h3>
-      <ol>
-        <li>Write solutions as PDF (scanned handwriting is fine) or Markdown/LaTeX.</li>
-        <li>Name the file <code>hwN_studentID.pdf</code>.</li>
-        <li>Push before the deadline — the last commit before the due time counts.</li>
-      </ol></div>
-    <div class="card"><h3>3 · Feedback</h3>
-      <ol>
-        <li>The AI grader checks each problem against the solution set.</li>
-        <li><code>FEEDBACK.md</code> with per-problem scores and corrections appears in your repo.</li>
-        <li>Score is emailed to your GIST address. Disputes: open a GitHub Issue in your repo.</li>
-      </ol></div>
-  </div>
+<h2>Homework Submission via GitHub</h2>
+<p class="sec-note"><b>One repository for the whole semester.</b> Register your GitHub username
+once in week 1; you are then invited to a private repository that holds every assignment. The AI
+grader reads your submission, commits per-problem corrections back to that same repository, and
+opens an issue that mentions you — so GitHub notifies you as soon as a score is posted. There is
+no second invitation and nothing to re-clone.</p>
+<div class="cards">
+<div class="card"><h3>1 · Register</h3>
+<ol>
+<li>Create a GitHub account if you do not have one. Any username is fine.</li>
+<li>Write your username next to your student ID in the
+<a href="https://docs.google.com/spreadsheets/d/1OrFfeWV9_lWL4FN9tESm1r3FkUpuu62I552MERUKwdU/edit" target="_blank" rel="noopener">registration sheet</a>. Do this in week 1 —
+no username means no repository, and no way to submit.</li>
+<li>Accept the emailed invitation to <code>it2026-&lt;your-username&gt;</code>.</li>
+</ol></div>
+<div class="card"><h3>2 · Submit</h3>
+<ol>
+<li>All ten problem sheets are already in <code>problems/</code> in your repository.</li>
+<li>Put your solution in <code>submission/hwN.pdf</code> — exactly that name, N being the
+assignment number. A file named anything else is not found, and counts as missing.</li>
+<li>PDF (scanned handwriting is fine if legible) or Markdown. The last commit before the
+deadline is the one graded.</li>
+</ol></div>
+<div class="card"><h3>3 · Feedback</h3>
+<ol>
+<li>Per-problem scores and corrections appear as <code>feedback/hwN-feedback.md</code>.</li>
+<li>An issue titled <code>HW#N graded: score/100</code> is opened and mentions you.</li>
+<li>Regrade requests: reply in that issue within 7 days. No email needed.</li>
+</ol></div>
+</div>
 </div></section>
-
 <section id="ta"><div class="wrap">
   <h2>AI Teaching Assistant</h2>
   <p class="sec-note"><b>Two channels.</b> Quick questions — definitions, theorem statements, course logistics — get instant answers right here in this chat. For rigorous full proofs, deep dives, or homework disputes, use the <a href="https://github.com/lincolnkerry/infotheory-2026/issues">GitHub Q&amp;A</a> (open an issue and mention <code>@claude</code>): a top-tier model answers there, and every Q&amp;A stays public so you can search past answers. The TA gives hints, not homework solutions.</p>
