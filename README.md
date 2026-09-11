@@ -1,49 +1,31 @@
-# Information Theory 2026 Fall — course repo (lincolnkerry/infotheory-2026)
+# Information Theory 2026 Fall — course homepage (lincolnkerry/infotheory-2026)
 
-Interactive course homepage + AI TA + GitHub Classroom homework pipeline.
+Public repo: the course homepage (GitHub Pages) and the problem sheets.
+Everything private — solutions, rubrics, grader, gradebook — lives elsewhere.
 
-## Repo layout
+## Layout
 ```
-index.html                  # interactive homepage (GitHub Pages)
-CLAUDE.md                   # AI TA persona & policy (used by ai-ta.yml)
-.github/workflows/ai-ta.yml # Claude answers student questions in Issues/Discussions
-hw-template/                # template repo content for each Classroom assignment
-grader/                     # -> goes into a SEPARATE PRIVATE repo (see below)
-docs/DESIGN-ko.md           # full architecture design (Korean)
+index.html          # homepage: schedule, HW badges (link to problems/hwset-N.pdf), submission guide, AI TA chat
+problems/           # hwset-0.pdf … hwset-8.pdf — the canonical problem sheets
+CLAUDE.md           # AI TA persona / policy
+docs/               # design notes
 ```
 
-## One-time setup (≈30 min)
-1. **Organization**: create `gist-infotheory-2026` (GitHub Classroom requires an org;
-   personal accounts cannot host classrooms). Free for education.
-2. **Classroom**: classroom.github.com → New classroom → link the org →
-   upload roster (student ID ↔ GitHub username ↔ email).
-3. **This repo**: push to `lincolnkerry/infotheory-2026`,
-   Settings → Pages → deploy from `main` → homepage at
-   `https://lincolnkerry.github.io/infotheory-2026/`.
-   Add repo secret `ANTHROPIC_API_KEY` (for the AI TA workflow).
-   Enable Discussions; create a "Q&A" category; create label `question`.
-4. **Private grader repo**: create `gist-infotheory-2026/grader` (PRIVATE).
-   Copy `grader/` contents there + add:
-   ```
-   roster.csv                # github,student_id,name,email
-   rubric/hwN-rubric.md      # per-problem points & criteria
-   solutions/hwN-solution.pdf
-   CURRENT_HW                # single number, bump weekly
-   ```
-   Secrets: `CLASSROOM_PAT` (fine-grained PAT, contents:rw on org repos),
-   `ANTHROPIC_API_KEY`, `SMTP_HOST/PORT/USER/PASS` (e.g. Gmail + app password).
-5. **Each assignment**: Classroom → New assignment `hwN` → template =
-   `hw-template` repo (put `problems.pdf` in it) → private repos, deadline on →
-   paste the invite link into `HW[]` in `index.html`.
+## How the course pipeline is wired (2026)
+- **Students**: one private repo each, `gist-infotheory-2026/it2026-<username>`,
+  created from `gist-infotheory-2026/hw-template`. They push `submission/hwN.pdf`
+  (or `.md`) by Wednesday 23:59 KST. A push-time workflow in the student repo
+  fails the check with a note if the grader would not see the file name.
+- **Problem sheets**: only here, under `problems/`. Student repos hold submissions
+  only, so a corrected sheet never goes stale in 44 copies.
+- **Grader** (private `lincolnkerry/it2026-solutions`): `grade_all.py` runs in
+  GitHub Actions, grades each submission against the solution book, commits
+  `feedback/hwN-feedback.md` to the student's repo, and pushes
+  `gradebook/hwN.csv` + `INDEX.md` to private `lincolnkerry/it2026-gradebook`.
+- **Trigger**: a Cloudflare Worker cron dispatches the grader Thursday 00:10 KST
+  (15:10 UTC Wed) and verifies at 07:30 KST, opening an issue if grading did not run.
+  GitHub's own `schedule` stays as a backup; a deadline-aware guard makes reruns idempotent.
 
-## Weekly routine (fully automatic after setup)
-- Students accept invite → push PDF/Markdown before Mon/Wed 23:59.
-- Cron in the grader repo fires past midnight: Claude grades vs rubric →
-  `feedback/hwN-feedback.md` committed to each student repo → email sent →
-  `gradebook/hwN.csv` updated. Manual run/regrade: Actions → "Grade homework"
-  → enter hw number (optionally specific usernames, or dry-run).
-
-## Security invariants
-- Rubrics, solutions, API keys, SMTP credentials, gradebook: **only in the
-  private grader repo**. Student repos and this public repo never contain secrets.
-- Grades/corrections go only to each student's private repo + their email.
+## Invariants
+- No secrets, solutions, or student data in this public repo.
+- Grades and corrections go only to each student's private repo.
